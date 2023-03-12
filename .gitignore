@@ -1,0 +1,11 @@
+# visual studio code settings
+.vscode
+
+# build directory
+build/
+
+# tests build directory
+tests/build/
+
+# unused files directory
+.unused/

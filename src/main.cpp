@@ -1,6 +1,9 @@
 #include "SudokuSolver.hpp"
+#include "SudokuValidator.hpp"
+#include "SudokuLoader.hpp"
 
 #include <iostream>
+#include <string>
 
 
 
@@ -8,18 +11,74 @@ void print(int board[81]);
 
 int main()
 {
+    const char* BOARDS_DIR = "../assets/boards/";
+    SudokuValidator validator;
+    SudokuLoader loader;
     SudokuSolver solver;
+
     int board[81]{};
 
-    board[0] = 5;
-    board[1] = 7;
+    char ans = ' ';
 
-    print(board);
+    while(ans != 'q')
+    {
+        std::cout << "\nChoose one:\n";
+        std::cout << "g - generate sudoku\n";
+        std::cout << "l - load sudoku\n";
+        std::cout << "p - print sudoku\n";
+        std::cout << "s - solve sudoku\n";
+        std::cout << "v - validate sudoku\n";
+        std::cout << "q - quit\n";
+        std::cout << "Your answer: ";
 
-    solver.Solve(board);
-    //std::cout << solver.Solutions(board) << std::endl;
+        std::string input;
+        std::cin >> input;
+        ans = input[0];
 
-    print(board);
+        switch(ans)
+        {
+            case 'g':   // generate sudoku
+            {
+                break;
+            }
+            case 'l':   // load sudoku
+            {
+                std::string path;
+                std::cout << "Enter path: ";
+                std::cin >> path;
+
+                path = BOARDS_DIR + path;
+                if(loader.Load(path, board))
+                    std::cout << "\n>> Sudoku has been loaded successfully <<\n";
+                else
+                    std::cout << "\n>> Could not load sudoku <<\n";
+                break;
+            }
+            case 'p':   // print sudoku
+            {
+                print(board);
+                break;
+            }
+            case 's':   // solve sudoku
+            {
+                solver.Solve(board);
+                break;
+            }
+            case 'v':   // validate sudoku
+            {
+                if(validator.Valid(board))
+                    std::cout << "\n>> Given sudoku is valid <<\n";
+                else
+                    std::cout << "\n>> Given sudoku is NOT valid <<\n";
+                break;
+            }
+            case 'q':   // quit
+            {
+                std::cout << "Bye!\n";
+                break;
+            }
+        }
+    }
 
     return 0;
 }

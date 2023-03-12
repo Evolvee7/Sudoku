@@ -8,7 +8,7 @@ class SudokuSolver
 public:
     bool Solve(int cells[81]);
     int Solutions(int cells[81]);
-    //bool Unique(int cells[81]);
+    bool Unique(int cells[81]);
 
 private:
     int* m_cells[81];
@@ -24,6 +24,7 @@ private:
     void initMembers(int* cells);
     bool solve(int index);
     void solutions(int index);
+    bool unique(int index);
     bool valid(int num, int index) const;
 };
 
@@ -42,6 +43,15 @@ int SudokuSolver::Solutions(int cells[81])
     solutions(0);
 
     return m_solutions;
+}
+
+bool SudokuSolver::Unique(int cells[81])
+{
+    initMembers(cells);
+
+    m_solutions = 0;
+
+    return unique(0);
 }
 
 void SudokuSolver::initMembers(int* cells)
@@ -79,20 +89,20 @@ bool SudokuSolver::solve(int index)
 {
     if(index >= 81)
         return true;
-    
-    if(*m_cells[index] != 0)
+    else if(*m_cells[index] != 0)
         return solve(index + 1);
+    else
+    {
+        for(int num = 1; num < 10; ++num)
+        {   
+            if(valid(num, index))
+            {
+                *m_cells[index] = num;
 
-    for(int num = 1; num < 10; ++num)
-    {   
-        if(valid(num, index))
-        {
-            *m_cells[index] = num;
-
-            if(solve(index + 1))
-                return true;
-            else
+                if(solve(index + 1))
+                    return true;
                 *m_cells[index] = 0;
+            }
         }
     }
     return false;
@@ -119,6 +129,30 @@ void SudokuSolver::solutions(int index)
         }
         *m_cells[index] = 0;
     }
+}
+
+bool SudokuSolver::unique(int index)
+{
+    if(m_solutions > 1)
+        return false;
+    else if(index >= 81)
+        ++m_solutions;
+    else if(*m_cells[index] != 0)
+        return unique(index + 1);
+    else
+    {
+        for(int num = 1; num < 10; ++num)
+        {   
+            if(valid(num, index))
+            {
+                *m_cells[index] = num;
+
+                return unique(index + 1);
+            }
+        }
+        *m_cells[index] = 0;
+    }
+    return true;
 }
 
 bool SudokuSolver::valid(int num, int index) const

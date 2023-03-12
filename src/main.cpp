@@ -1,6 +1,7 @@
 #include "SudokuSolver.hpp"
 #include "SudokuValidator.hpp"
 #include "SudokuLoader.hpp"
+#include "Timer.hpp"
 
 #include <iostream>
 #include <string>
@@ -15,6 +16,8 @@ int main()
     SudokuValidator validator;
     SudokuLoader loader;
     SudokuSolver solver;
+
+    Timer timer;
 
     int board[81]{};
 
@@ -61,7 +64,9 @@ int main()
             }
             case 's':   // solve sudoku
             {
+                timer.Start();
                 solver.Solve(board);
+                std::cout << ">> Sudoku was solved in " << timer.GetUs() << " us <<\n";
                 break;
             }
             case 'v':   // validate sudoku
@@ -78,6 +83,8 @@ int main()
                 break;
             }
         }
+
+
     }
 
     return 0;

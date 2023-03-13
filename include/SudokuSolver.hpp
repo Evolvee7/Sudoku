@@ -26,6 +26,7 @@ private:
     void solutions(int index);
     bool unique(int index);
     bool valid(int num, int index) const;
+    int findNextUnassigned(int index) const;
 };
 
 bool SudokuSolver::Solve(int cells[81])
@@ -87,10 +88,9 @@ void SudokuSolver::initMembers(int* cells)
 
 bool SudokuSolver::solve(int index)
 {
-    if(index >= 81)
+    index = findNextUnassigned(index);
+    if(index == -1)
         return true;
-    else if(*m_cells[index] != 0)
-        return solve(index + 1);
     else
     {
         for(int num = 1; num < 10; ++num)
@@ -112,10 +112,9 @@ void SudokuSolver::solutions(int index)
 {
     if(m_solutions >= MAX_SOLUTIONS)
         return;
-    else if(index >= 81)
+    index = findNextUnassigned(index);
+    if(index == -1)
         ++m_solutions;
-    else if(*m_cells[index] != 0)
-        solutions(index + 1);
     else
     {
         for(int num = 1; num < 10; ++num)
@@ -135,10 +134,9 @@ bool SudokuSolver::unique(int index)
 {
     if(m_solutions > 1)
         return false;
-    else if(index >= 81)
+    index = findNextUnassigned(index);
+    if(index == -1)
         ++m_solutions;
-    else if(*m_cells[index] != 0)
-        return unique(index + 1);
     else
     {
         for(int num = 1; num < 10; ++num)
@@ -179,4 +177,14 @@ bool SudokuSolver::valid(int num, int index) const
     }
     
     return true;
+}
+
+int SudokuSolver::findNextUnassigned(int index) const
+{
+    for(int i = index; i < 81; ++i)
+    {
+        if(*m_cells[i] == 0)
+            return i;
+    }
+    return -1;
 }
